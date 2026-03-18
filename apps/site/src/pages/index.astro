@@ -1,0 +1,31 @@
+---
+import { getCollection } from "astro:content"
+import { sectionConfig, siteConfig } from "@my/config"
+import { HomeBanner } from "@/components/app/home-banner"
+import { ModuleHeader } from "@/components/app/module-header"
+import { WorkShowcaseCard } from "@/components/app/work-showcase-card"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import { getBannerItems, getDisplayDate } from "@/lib/works"
+
+const works = (await getCollection("works")).sort(
+  (a, b) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0)
+)
+const bannerItems = getBannerItems(works)
+---
+
+<BaseLayout
+  title={sectionConfig.works.label}
+  description={sectionConfig.works.description}
+  currentPath="/"
+  overlayHeader={true}
+>
+  <HomeBanner items={bannerItems} client:load />
+  <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6">
+    <ModuleHeader title={siteConfig.heroTitle} description={siteConfig.heroIntro} />
+    <section class="grid gap-6">
+      {works.map((entry) => (
+        <WorkShowcaseCard entry={entry} href={`/works/${entry.id}`} displayDate={getDisplayDate(entry)} />
+      ))}
+    </section>
+  </div>
+</BaseLayout>

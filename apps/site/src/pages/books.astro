@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content"
+import { sectionConfig } from "@my/config"
+import { EntryCard } from "@/components/app/entry-card"
+import { ModuleHeader } from "@/components/app/module-header"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+
+const books = (await getCollection("books")).sort(
+  (a, b) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0)
+)
+---
+
+<BaseLayout title={sectionConfig.books.label} description={sectionConfig.books.description} currentPath="/books">
+  <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6">
+    <ModuleHeader title={sectionConfig.books.title} description={sectionConfig.books.description} />
+    <section class="grid gap-6 md:grid-cols-2">
+      {books.map((entry) => (
+        <EntryCard
+          title={entry.data.title}
+          summary={entry.data.summary}
+          meta={entry.data.author}
+          tags={entry.data.tags}
+          href={`/books/${entry.id}`}
+          image={entry.data.cardImage}
+          imageAlt={entry.data.cardImageAlt}
+        />
+      ))}
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,94 @@
+---
+import { sectionConfig } from "@my/config"
+import { EntryCard } from "@/components/app/entry-card"
+import { ModuleHeader } from "@/components/app/module-header"
+import { TagLink } from "@/components/app/tag-link"
+import { WorkShowcaseCard } from "@/components/app/work-showcase-card"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import { encodeTag, findTagBySlug, getTagData } from "@/lib/tags"
+import { getDisplayDate } from "@/lib/works"
+
+export async function getStaticPaths() {
+  const { allTags } = await getTagData()
+
+  return allTags.map((tag) => ({
+    params: { tag: encodeTag(tag) },
+    props: { currentTag: tag, currentSlug: encodeTag(tag) },
+  }))
+}
+
+const { currentTag: staticTag, currentSlug } = Astro.props
+const { works, lab, books, allTags } = await getTagData()
+const pageTag = staticTag ?? findTagBySlug(allTags, Astro.params.tag ?? "") ?? ""
+
+const matchedWorks = works.filter((entry) => entry.data.tags.includes(pageTag))
+const matchedLab = lab.filter((entry) => entry.data.tags.includes(pageTag))
+const matchedBooks = books.filter((entry) => entry.data.tags.includes(pageTag))
+---
+
+<BaseLayout
+  title={`Tag: ${pageTag}`}
+  description={`Entries tagged with ${pageTag}`}
+  currentPath={`/tags/${currentSlug ?? encodeTag(pageTag)}`}
+>
+  <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6">
+    <ModuleHeader title={pageTag} description="Browse entries collected under this tag." />
+
+    <section class="space-y-4">
+      <div class="flex flex-wrap gap-2">
+        {allTags.map((tag) => (
+          <TagLink tag={tag} active={tag === pageTag} />
+        ))}
+      </div>
+    </section>
+
+    {matchedWorks.length ? (
+      <section class="space-y-5">
+        <h2 class="font-sans text-2xl tracking-[-0.04em]">{sectionConfig.works.label}</h2>
+        <div class="grid gap-6">
+          {matchedWorks.map((entry) => (
+            <WorkShowcaseCard entry={entry} href={`/works/${entry.id}`} displayDate={getDisplayDate(entry)} />
+          ))}
+        </div>
+      </section>
+    ) : null}
+
+    {matchedLab.length ? (
+      <section class="space-y-5">
+        <h2 class="font-sans text-2xl tracking-[-0.04em]">{sectionConfig.lab.label}</h2>
+        <div class="grid gap-6 md:grid-cols-2">
+          {matchedLab.map((entry) => (
+            <EntryCard
+              title={entry.data.title}
+              summary={entry.data.summary}
+              meta={entry.data.status}
+              tags={entry.data.tags}
+              href={`/lab/${entry.id}`}
+              image={entry.data.cardImage}
+              imageAlt={entry.data.cardImageAlt}
+            />
+          ))}
+        </div>
+      </section>
+    ) : null}
+
+    {matchedBooks.length ? (
+      <section class="space-y-5">
+        <h2 class="font-sans text-2xl tracking-[-0.04em]">{sectionConfig.books.label}</h2>
+        <div class="grid gap-6 md:grid-cols-2">
+          {matchedBooks.map((entry) => (
+            <EntryCard
+              title={entry.data.title}
+              summary={entry.data.summary}
+              meta={entry.data.author}
+              tags={entry.data.tags}
+              href={`/books/${entry.id}`}
+              image={entry.data.cardImage}
+              imageAlt={entry.data.cardImageAlt}
+            />
+          ))}
+        </div>
+      </section>
+    ) : null}
+  </div>
+</BaseLayout>

@@ -1,0 +1,63 @@
+---
+import { siteConfig } from "@my/config"
+import { SiteHeader } from "@/components/app/site-header"
+import "@/styles/globals.css"
+
+interface Props {
+  title?: string
+  description?: string
+  currentPath?: string
+  overlayHeader?: boolean
+}
+
+const {
+  title,
+  description = siteConfig.description,
+  currentPath = "/",
+  overlayHeader = false,
+} = Astro.props
+
+const pageTitle = title ? `${title} | ${siteConfig.name}` : siteConfig.name
+const canonical = new URL(
+  currentPath === "/" ? siteConfig.base : `${siteConfig.base}${currentPath}`,
+  siteConfig.site
+).toString()
+const themeInitScript = `
+  (function () {
+    const storageKey = "my-lab-theme";
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem(storageKey) || "system";
+    const resolvedTheme =
+      savedTheme === "system"
+        ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        : savedTheme;
+
+    root.dataset.theme = savedTheme;
+    root.classList.toggle("dark", resolvedTheme === "dark");
+  })();
+`
+---
+
+<html lang={siteConfig.language}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href={`${siteConfig.base}/favicon.svg`} />
+    <link rel="icon" href={`${siteConfig.base}/favicon.ico`} />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <script is:inline set:html={themeInitScript} />
+  </head>
+  <body>
+    <SiteHeader currentPath={currentPath} overlay={overlayHeader} client:load />
+    <main class="min-h-screen">
+      <slot />
+    </main>
+    <footer class="mx-auto mt-16 flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pb-10 text-sm text-muted-foreground md:px-6">
+      <span>{siteConfig.footerName}</span>
+      <span>Built with Astro, React, shadcn/ui, and Markdown.</span>
+    </footer>
+  </body>
+</html>

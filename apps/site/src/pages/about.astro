@@ -1,0 +1,26 @@
+---
+import { sectionConfig, siteConfig } from "@my/config"
+import { ArticleMediaBlocks } from "@/components/app/article-media-blocks"
+import { Card, CardContent } from "@my/ui/card"
+import { ModuleHeader } from "@/components/app/module-header"
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import AboutContent, { frontmatter as aboutFrontmatter } from "../content/about/about/index.md"
+---
+
+<BaseLayout title={sectionConfig.about.label} description={sectionConfig.about.description} currentPath="/about">
+  <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6">
+    <ModuleHeader title={sectionConfig.about.title} description={sectionConfig.about.description} />
+    <Card className="rounded-[2rem] border-border/60 bg-card/80 shadow-sm">
+      <CardContent className="space-y-6 px-6 py-8 md:px-10 md:py-10">
+        <div class="grid gap-1 text-sm uppercase tracking-[0.18em] text-muted-foreground">
+          <span>{siteConfig.profile.location}</span>
+          <span>{siteConfig.profile.email}</span>
+        </div>
+        <ArticleMediaBlocks blocks={aboutFrontmatter.blocks ?? []} />
+        <div class="space-y-6 text-lg leading-9 text-muted-foreground [&_p]:leading-9">
+          <AboutContent />
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+</BaseLayout>
