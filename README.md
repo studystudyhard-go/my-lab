@@ -1,6 +1,6 @@
 # Dora
 
-一个基于 `pnpm workspace` 的 Astro 静态个人博客项目，当前发布目标为 [https://kidyfirst.github.io/my-lab/](https://kidyfirst.github.io/my-lab/)。
+一个基于 `pnpm workspace` 的 Astro 静态个人博客项目，当前发布目标为 [https://studystudyhard-go.github.io/my-lab/](https://studystudyhard-go.github.io/my-lab/)。
 
 项目采用：
 
@@ -70,7 +70,7 @@ pnpm dev
 
 当前发布配置为：
 
-- `site`: `https://kidyfirst.github.io`
+- `site`: `https://studystudyhard-go.github.io`
 - `base`: `/my-lab`
 
 ## 内容目录

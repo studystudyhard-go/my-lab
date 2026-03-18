@@ -2,7 +2,7 @@ export const siteConfig = {
   name: 'Dora',
   footerName: 'Dora',
   language: 'zh-CN',
-  site: 'https://kidyfirst.github.io',
+  site: 'https://studystudyhard-go.github.io',
   base: '/my-lab',
   title: 'Dora',
   description: 'A quiet place for selected works, lab notes, books, and a short introduction.',
