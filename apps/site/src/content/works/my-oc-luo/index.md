@@ -5,6 +5,8 @@ publishedAt: 2026-04-06
 tags:
   - 洛
   - 漫画
+  - OC
+  - 原创
 featured: false
 coverLayout:
   direction: row
@@ -17,7 +19,7 @@ coverLayout:
       flex: 1
       caption: 我的OC
       note: 用红黑两色去强调角色的辨识度，把发丝、角、耳饰和花元素压在同一张画面里，保留了漫画式线稿的轻快和随手感。
-      tags: [洛, 漫画]
+      tags: [洛, 漫画, OC, 原创]
       banner: 1
 media:
   - type: image
