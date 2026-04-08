@@ -11,6 +11,31 @@ export function getDisplayDate(entry: any) {
   return formatDisplayDate(entry.data.publishedAt);
 }
 
+export function isHiddenCollectionEntry(entry: any) {
+  return String(entry?.id ?? "")
+    .split("/")
+    .filter(Boolean)
+    .some((segment) => segment.startsWith("_")) || entry?.data?.hidden === true;
+}
+
+export function isHiddenTag(tag: string) {
+  return tag.trim().startsWith("_");
+}
+
+export function filterVisibleTags(tags: string[] = []) {
+  return tags.filter((tag) => !isHiddenTag(tag));
+}
+
+export function filterVisibleCollectionEntries(entries: any[]) {
+  return entries.filter((entry) => !isHiddenCollectionEntry(entry));
+}
+
+export function sortEntriesByPublishedAt(entries: any[]) {
+  return [...entries].sort(
+    (a, b) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0)
+  );
+}
+
 function walkNodes(nodes: any[], images: any[] = []) {
   for (const node of nodes) {
     if (node.type === 'image') {

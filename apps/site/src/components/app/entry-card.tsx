@@ -1,4 +1,5 @@
 import { withBase } from "@/lib/site"
+import { filterVisibleTags } from "@/lib/works"
 import { Badge } from "@my/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@my/ui/card"
 import { TagLink } from "@/components/app/tag-link"
@@ -37,7 +38,8 @@ function resolveImage(image?: CardImage) {
 
 export function EntryCard({ title, summary, meta, tags = [], href, image, imageAlt }: Props) {
   const resolvedImage = resolveImage(image)
-  const hasTags = tags.length > 0
+  const visibleTags = filterVisibleTags(tags)
+  const hasTags = visibleTags.length > 0
 
   return (
     <Card className="group relative overflow-hidden rounded-[1.75rem] border-border/60 bg-card/75 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border hover:shadow-md">
@@ -72,10 +74,10 @@ export function EntryCard({ title, summary, meta, tags = [], href, image, imageA
               <p className={hasTags ? "min-h-24 overflow-hidden text-base leading-8 text-muted-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]" : "min-h-32 overflow-hidden text-base leading-8 text-muted-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4]"}>
                 {summary}
               </p>
-              {tags.length > 0 ? (
+              {visibleTags.length > 0 ? (
                 <div className="relative z-30 -mx-1 overflow-x-auto pb-1 pointer-events-auto">
                   <div className="flex min-w-max gap-2 px-1">
-                    {tags.map((tag) => (
+                    {visibleTags.map((tag) => (
                       <TagLink key={tag} tag={tag} />
                     ))}
                   </div>
@@ -96,10 +98,10 @@ export function EntryCard({ title, summary, meta, tags = [], href, image, imageA
             <p className={hasTags ? "min-h-24 overflow-hidden text-base leading-8 text-muted-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]" : "min-h-32 overflow-hidden text-base leading-8 text-muted-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4]"}>
               {summary}
             </p>
-            {tags.length > 0 ? (
+            {visibleTags.length > 0 ? (
               <div className="relative z-30 -mx-1 overflow-x-auto pb-1 pointer-events-auto">
                 <div className="flex min-w-max gap-2 px-1">
-                  {tags.map((tag) => (
+                  {visibleTags.map((tag) => (
                     <TagLink key={tag} tag={tag} />
                   ))}
                 </div>

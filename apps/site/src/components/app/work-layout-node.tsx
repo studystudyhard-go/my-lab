@@ -1,5 +1,6 @@
 import { Badge } from "@my/ui/badge"
 import { Card } from "@my/ui/card"
+import { filterVisibleTags } from "@/lib/works"
 import { TagLink } from "@/components/app/tag-link"
 
 type Node = any
@@ -10,8 +11,9 @@ export function WorkLayoutNode({
 }: {
   node: Node
   overlayDate?: string
-}) {
+  }) {
   const flexValue = node.flex ?? 1
+  const visibleTags = filterVisibleTags(node.tags ?? [])
 
   if (node.type === "group") {
     return (
@@ -25,7 +27,7 @@ export function WorkLayoutNode({
 
   return (
     <Card
-      className="relative flex min-w-0 overflow-hidden rounded-[1.5rem] border-white/60 bg-white/70 p-0 shadow-sm"
+      className="relative flex min-w-0 overflow-hidden rounded-[1.5rem] border-0 bg-white/70 p-0 shadow-sm"
       style={{ flex: flexValue }}
     >
       <img
@@ -41,13 +43,13 @@ export function WorkLayoutNode({
           {overlayDate}
         </Badge>
       ) : null}
-      {node.caption || node.note || node.tags?.length ? (
+      {node.caption || node.note || visibleTags.length ? (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 space-y-2 bg-gradient-to-t from-background/92 via-background/70 to-transparent px-4 pb-4 pt-10">
           {node.caption ? <p className="font-sans text-lg font-semibold tracking-[-0.03em]">{node.caption}</p> : null}
           {node.note ? <p className="text-sm leading-6 text-muted-foreground">{node.note}</p> : null}
-          {node.tags?.length ? (
+          {visibleTags.length ? (
             <div className="pointer-events-auto flex flex-wrap gap-2">
-              {node.tags.map((tag: string) => (
+              {visibleTags.map((tag: string) => (
                 <TagLink key={tag} tag={tag} variant="secondary" />
               ))}
             </div>

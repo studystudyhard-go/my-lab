@@ -2,10 +2,12 @@
 import { getCollection, render } from "astro:content"
 import { ArticleMediaBlocks } from "@/components/app/article-media-blocks"
 import { DetailShell } from "@/components/app/detail-shell"
+import GitHubComments from "@/components/app/github-comments.astro"
 import BaseLayout from "@/layouts/BaseLayout.astro"
+import { filterVisibleCollectionEntries } from "@/lib/works"
 
 export async function getStaticPaths() {
-  const notes = await getCollection("lab")
+  const notes = filterVisibleCollectionEntries(await getCollection("lab"))
   return notes.map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
 }
 
@@ -23,10 +25,11 @@ const { Content } = await render(entry)
       backHref="/lab"
       backLabel="返回实验室"
     >
-      <ArticleMediaBlocks blocks={entry.data.blocks} />
+      <ArticleMediaBlocks blocks={entry.data.blocks} client:load />
       <div class="space-y-6 text-lg leading-9 text-muted-foreground [&_p]:leading-9">
         <Content />
       </div>
     </DetailShell>
+    <GitHubComments />
   </div>
 </BaseLayout>

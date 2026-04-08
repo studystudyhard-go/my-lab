@@ -1,6 +1,7 @@
 import { siteConfig } from "@my/config"
 
 import { withBase } from "@/lib/site"
+import { filterVisibleTags } from "@/lib/works"
 import { Card, CardContent, CardHeader, CardTitle } from "@my/ui/card"
 import { TagLink } from "@/components/app/tag-link"
 import { WorkLayoutNode } from "@/components/app/work-layout-node"
@@ -13,11 +14,12 @@ export function WorkShowcaseCard({
   entry: any
   href: string
   displayDate: string
-}) {
+  }) {
   const layout = entry.data.coverLayout
   const fallbackImage = entry.data.media?.[0]
   const minHeight = layout?.minHeight ?? siteConfig.worksDisplay.cardMinHeight * 16
-  const hasTags = entry.data.tags.length > 0
+  const visibleTags = filterVisibleTags(entry.data.tags ?? [])
+  const hasTags = visibleTags.length > 0
 
   return (
     <Card className="group relative overflow-hidden rounded-[2rem] border-border/60 bg-card/80 p-0 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border hover:shadow-md">
@@ -28,7 +30,7 @@ export function WorkShowcaseCard({
       />
       <div className="relative z-20 pointer-events-none">
         <div
-          className={`flex gap-3 bg-secondary/30 p-3 ${layout?.direction === "column" ? "flex-col" : "flex-row"} max-md:flex-col`}
+          className={`flex gap-3 p-3 ${layout?.direction === "column" ? "flex-col" : "flex-row"} max-md:flex-col`}
           style={{ minHeight }}
         >
           {layout
@@ -50,7 +52,7 @@ export function WorkShowcaseCard({
           </p>
           <div className="relative z-30 -mx-1 overflow-x-auto pb-1 pointer-events-auto">
             <div className="flex min-w-max gap-2 px-1">
-              {entry.data.tags.map((tag: string) => (
+              {visibleTags.map((tag: string) => (
                 <TagLink key={tag} tag={tag} />
               ))}
             </div>

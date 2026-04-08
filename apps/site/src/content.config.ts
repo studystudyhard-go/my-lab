@@ -39,6 +39,7 @@ const datedEntry = z.object({
   publishedAt: z.coerce.date().optional(),
   tags: z.array(z.string()).default([]),
   featured: z.boolean().default(false),
+  hidden: z.boolean().default(false),
 });
 
 const works = defineCollection({

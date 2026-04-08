@@ -6,7 +6,7 @@ import { TagLink } from "@/components/app/tag-link"
 import { WorkShowcaseCard } from "@/components/app/work-showcase-card"
 import BaseLayout from "@/layouts/BaseLayout.astro"
 import { encodeTag, findTagBySlug, getTagData } from "@/lib/tags"
-import { getDisplayDate } from "@/lib/works"
+import { filterVisibleTags, getDisplayDate, isHiddenCollectionEntry } from "@/lib/works"
 
 export async function getStaticPaths() {
   const { allTags } = await getTagData()
@@ -21,19 +21,21 @@ const { currentTag: staticTag, currentSlug } = Astro.props
 const { works, lab, books, allTags } = await getTagData()
 const pageTag = staticTag ?? findTagBySlug(allTags, Astro.params.tag ?? "") ?? ""
 
-const matchedWorks = works.filter((entry) => entry.data.tags.includes(pageTag))
-const matchedLab = lab.filter((entry) => entry.data.tags.includes(pageTag))
-const matchedBooks = books.filter((entry) => entry.data.tags.includes(pageTag))
+const visibleWorks = works.filter((entry) => !isHiddenCollectionEntry(entry))
+const visibleLab = lab.filter((entry) => !isHiddenCollectionEntry(entry))
+const visibleBooks = books.filter((entry) => !isHiddenCollectionEntry(entry))
+
+const matchedWorks = visibleWorks.filter((entry) => filterVisibleTags(entry.data.tags ?? []).includes(pageTag))
+const matchedLab = visibleLab.filter((entry) => filterVisibleTags(entry.data.tags ?? []).includes(pageTag))
+const matchedBooks = visibleBooks.filter((entry) => filterVisibleTags(entry.data.tags ?? []).includes(pageTag))
 ---
 
 <BaseLayout
-  title={`Tag: ${pageTag}`}
-  description={`Entries tagged with ${pageTag}`}
+  title={`标签：${pageTag}`}
+  description={`收录了标签 ${pageTag} 的条目。`}
   currentPath={`/tags/${currentSlug ?? encodeTag(pageTag)}`}
 >
   <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6">
-    <ModuleHeader title={pageTag} description="Browse entries collected under this tag." />
-
     <section class="space-y-4">
       <div class="flex flex-wrap gap-2">
         {allTags.map((tag) => (

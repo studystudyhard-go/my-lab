@@ -1,5 +1,9 @@
+"use client"
+
 import { Badge } from "@my/ui/badge"
 import { Card, CardContent } from "@my/ui/card"
+
+import { FlippableImage } from "@/components/app/flippable-image"
 import { cn } from "@/lib/utils"
 
 type BlockImage =
@@ -45,19 +49,20 @@ export function ArticleMediaBlocks({ blocks = [] }: { blocks?: ArticleMediaBlock
           <Card
             key={`${block.title}-${index}`}
             className={cn(
-              "overflow-hidden rounded-[2rem] border-border/60 shadow-sm",
+              "overflow-hidden rounded-[2rem] border-0 shadow-sm",
               block.tone === "muted" ? "bg-secondary/35" : "bg-card/72"
             )}
           >
             <div className="grid gap-0 md:grid-cols-2">
               <div className={cn("relative min-h-[18rem]", reversed && "md:order-2")}>
-                <img
+                <FlippableImage
                   src={image.src}
                   alt={block.alt ?? block.title}
                   width={image.width}
                   height={image.height}
-                  className="h-full w-full object-cover"
                   loading="lazy"
+                  className="absolute inset-0"
+                  imageClassName="h-full w-full object-cover"
                 />
               </div>
               <CardContent className={cn("flex items-center p-6 md:p-8", reversed && "md:order-1")}>

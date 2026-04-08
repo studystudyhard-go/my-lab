@@ -19,7 +19,6 @@ import {
   SheetClose,
   SheetContent,
   SheetTitle,
-  SheetTrigger,
 } from "@my/ui/sheet"
 
 type Props = {
@@ -29,7 +28,9 @@ type Props = {
 
 export function SiteHeader({ currentPath, overlay = false }: Props) {
   const [scrolled, setScrolled] = React.useState(false)
+  const [menuOpen, setMenuOpen] = React.useState(false)
   const items = navigationItems(currentPath)
+  const avatarSrc = withBase("/avatar.png")
 
   React.useEffect(() => {
     if (!overlay) return
@@ -46,24 +47,32 @@ export function SiteHeader({ currentPath, overlay = false }: Props) {
   return (
     <header
       className={cn(
-        "top-0 z-50 w-full transition-all duration-300",
+        "top-0 isolate z-[110] w-full transition-all duration-300",
         overlay
           ? "fixed inset-x-0"
           : "sticky border-b border-border/60 bg-background/90 backdrop-blur-xl",
         overlay && !scrolled && "bg-transparent",
         overlay && scrolled && "bg-background/88 backdrop-blur-xl shadow-sm border-b border-border/70"
       )}
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
       <div className="mx-auto flex w-full max-w-[124rem] items-center justify-between px-4 py-4 md:px-8">
-        <div className="flex items-center gap-4 md:gap-5">
+        <div className="flex min-w-0 items-center gap-4 md:gap-5">
           <a
             href={withBase("/")}
-            className={cn(
-              "font-sans text-3xl tracking-[0.35em] uppercase",
-              overlay && !scrolled ? "text-white" : "text-foreground"
-            )}
+            className={cn("flex min-w-0 items-center gap-3", overlay && !scrolled ? "text-white" : "text-foreground")}
           >
-            {siteConfig.name}
+            <span className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-white/90 shadow-sm ring-1 ring-black/5">
+              <img
+                src={avatarSrc}
+                alt=""
+                aria-hidden="true"
+                className="h-full w-full object-cover"
+              />
+            </span>
+            <span className="truncate font-sans text-2xl tracking-[0.18em] md:text-3xl md:tracking-[0.24em]">
+              {siteConfig.name}
+            </span>
           </a>
           <div className="hidden md:block">
             <ThemeToggle overlay={overlay && !scrolled} />
@@ -92,22 +101,42 @@ export function SiteHeader({ currentPath, overlay = false }: Props) {
         </div>
 
         <div className="flex items-center md:hidden">
-          <Sheet>
-            <SheetTrigger
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+            <button
+              type="button"
+              aria-label="Open menu"
+              aria-haspopup="dialog"
+              aria-expanded={menuOpen}
               className={cn(
                 buttonVariants({
                   variant: overlay && !scrolled ? "secondary" : "outline",
                   size: "icon",
                 }),
-                "relative z-[60] rounded-full pointer-events-auto",
+                "rounded-full touch-manipulation shadow-sm",
                 overlay && !scrolled && "border-white/20 bg-white/12 text-white"
               )}
+              onClick={() => setMenuOpen(true)}
+              onTouchEnd={() => setMenuOpen(true)}
             >
-                <Menu className="size-5" />
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[18rem] px-6 pt-6 pb-8">
-              <SheetTitle className="pr-14 font-sans text-xl tracking-[0.22em] uppercase">
-                {siteConfig.name}
+              <Menu className="size-5" />
+            </button>
+            <SheetContent
+              side="right"
+              style={{ width: "min(18rem, 85vw)" }}
+              className="px-6 pt-6 pb-8"
+            >
+              <SheetTitle className="pr-14">
+                <div className="flex items-center gap-3">
+                  <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-white/90 shadow-sm ring-1 ring-black/5">
+                    <img
+                      src={avatarSrc}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-full w-full object-cover"
+                    />
+                  </span>
+                  <span className="font-sans text-xl tracking-[0.18em]">{siteConfig.name}</span>
+                </div>
               </SheetTitle>
               <div className="mt-8">
                 <ThemeToggle />

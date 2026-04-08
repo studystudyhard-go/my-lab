@@ -1,17 +1,17 @@
 export const siteConfig = {
-  name: 'Dora',
-  footerName: 'Dora',
+  name: "Dora's Blog",
+  footerName: "Dora's Blog",
   language: 'zh-CN',
   site: 'https://studystudyhard-go.github.io',
   base: '/my-lab',
-  title: 'Dora',
-  description: 'A quiet place for selected works, lab notes, books, and a short introduction.',
-  heroTitle: 'Selected works, notes, and reading traces.',
+  title: "Dora's Blog",
+  description: '一个安静的空间，收录精选作品、实验笔记、书籍，以及关于我的一些片段。',
+  heroTitle: '精选作品、笔记与阅读痕迹',
   heroIntro:
-    'A minimal personal space for projects, experiments, books, and a few words about the person behind them.',
+    '这是一个简洁的个人空间，记录项目、实验、书籍，以及写给创作过程的几句话。',
   profile: {
-    location: 'Based in China',
-    email: 'hello@example.com',
+    location: '中国',
+    email: 'dora.lyu.2026@gmail.com',
   },
   worksDisplay: {
     bannerLimit: 5,
@@ -32,22 +32,22 @@ export const navigation = [
 export const sectionConfig = {
   works: {
     label: '作品展',
-    title: 'Selected Work',
-    description: 'Projects, commissions, and pieces worth keeping close.',
+    title: '精选作品',
+    description: '项目、委托，以及值得留在这里的作品。',
   },
   lab: {
     label: '实验室',
-    title: 'Lab Notes',
-    description: 'Short experiments, prototypes, and ongoing explorations.',
+    title: '实验笔记',
+    description: '简短实验、原型和持续进行的探索。',
   },
   books: {
     label: '书籍',
-    title: 'Bookshelf',
-    description: 'Books that shaped ideas, methods, and small shifts in perspective.',
+    title: '读书札记',
+    description: '那些影响了想法、方法和视角的书。',
   },
   about: {
     label: '关于',
-    title: 'About',
-    description: 'A brief note about the person, practice, and pace behind the site.',
+    title: '关于',
+    description: '关于这个站点背后的人、实践与节奏的一点说明。',
   },
 };

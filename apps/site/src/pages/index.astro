@@ -5,11 +5,15 @@ import { HomeBanner } from "@/components/app/home-banner"
 import { ModuleHeader } from "@/components/app/module-header"
 import { WorkShowcaseCard } from "@/components/app/work-showcase-card"
 import BaseLayout from "@/layouts/BaseLayout.astro"
-import { getBannerItems, getDisplayDate } from "@/lib/works"
+import {
+  filterVisibleCollectionEntries,
+  getBannerItems,
+  getDisplayDate,
+  sortEntriesByPublishedAt,
+} from "@/lib/works"
 
-const works = (await getCollection("works")).sort(
-  (a, b) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0)
-)
+const visibleWorks = sortEntriesByPublishedAt(filterVisibleCollectionEntries(await getCollection("works")))
+const works = visibleWorks.slice(0, 2)
 const bannerItems = getBannerItems(works)
 ---
 

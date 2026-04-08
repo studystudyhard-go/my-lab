@@ -1,45 +1,49 @@
-import { Badge } from "@my/ui/badge"
-import { Card } from "@my/ui/card"
-import { TagLink } from "@/components/app/tag-link"
+"use client"
 
-export function WorkMasonry({
-  media,
-  displayDate,
-}: {
-  media: any[]
-  displayDate: string
-}) {
-  return (
-    <div className="columns-1 gap-4 md:columns-2 xl:columns-3">
-      {media.map((item, index) => (
-        <Card
-          key={`${item.src.src}-${index}`}
-          className="mb-4 break-inside-avoid overflow-hidden rounded-[1.75rem] border-border/60 bg-card/78 p-0 shadow-sm"
+import { siteConfig } from "@my/config"
+
+import { FlippableImage } from "@/components/app/flippable-image"
+
+export function WorkMasonry({ media }: { media: any[] }) {
+  if (!media.length) return null
+
+  if (media.length === 1) {
+    const item = media[0]
+
+    return (
+      <div className="mx-auto w-full">
+        <div
+          className="relative flex w-full items-center justify-center overflow-hidden rounded-[1.5rem] bg-secondary/20"
+          style={{ height: `${siteConfig.worksDisplay.detailMinHeight * 16}px` }}
         >
-          <div className="relative">
-            <img
-              src={item.src.src}
-              alt={item.alt ?? item.caption ?? ""}
-              width={item.src.width}
-              height={item.src.height}
-              className="h-auto w-full object-cover"
-            />
-            <Badge className="absolute bottom-4 right-4 rounded-full bg-background/95 px-3 py-1 font-sans text-[10px] tracking-[0.2em] text-foreground">
-              {displayDate}
-            </Badge>
-          </div>
-          <div className="space-y-3 px-5 py-5">
-            {item.caption ? <p className="font-sans text-xl font-semibold tracking-[-0.03em]">{item.caption}</p> : null}
-            {item.note ? <p className="text-sm leading-7 text-muted-foreground">{item.note}</p> : null}
-            {item.tags?.length ? (
-              <div className="flex flex-wrap gap-2">
-                {item.tags.map((tag: string) => (
-                  <TagLink key={tag} tag={tag} variant="secondary" />
-                ))}
-              </div>
-            ) : null}
-          </div>
-        </Card>
+          <FlippableImage
+            src={item.src.src}
+            alt={item.alt ?? item.caption ?? ""}
+            width={item.src.width}
+            height={item.src.height}
+            loading="lazy"
+            className="flex h-full w-full items-center justify-center"
+            imageClassName="block h-full w-auto max-w-full object-contain"
+          />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mx-auto w-full max-w-6xl columns-1 gap-4 md:columns-2 xl:columns-3">
+      {media.map((item, index) => (
+        <div key={`${item.src.src}-${index}`} className="mb-4 break-inside-avoid overflow-hidden rounded-[1.5rem]">
+          <FlippableImage
+            src={item.src.src}
+            alt={item.alt ?? item.caption ?? ""}
+            width={item.src.width}
+            height={item.src.height}
+            loading="lazy"
+            className="w-full"
+            imageClassName="block h-auto w-full"
+          />
+        </div>
       ))}
     </div>
   )

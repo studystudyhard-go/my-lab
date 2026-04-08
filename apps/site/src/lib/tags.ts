@@ -1,4 +1,9 @@
 import { getCollection } from "astro:content"
+import {
+  filterVisibleCollectionEntries,
+  filterVisibleTags,
+  sortEntriesByPublishedAt,
+} from "@/lib/works"
 
 export function encodeTag(tag: string) {
   return tag
@@ -25,15 +30,21 @@ export async function getTagData() {
     getCollection("books"),
   ])
 
+  const visibleWorks = sortEntriesByPublishedAt(filterVisibleCollectionEntries(works))
+  const visibleLab = sortEntriesByPublishedAt(filterVisibleCollectionEntries(lab))
+  const visibleBooks = sortEntriesByPublishedAt(filterVisibleCollectionEntries(books))
+
   const allTags = Array.from(
     new Set(
-      [...works, ...lab, ...books].flatMap((entry) => entry.data.tags ?? [])
+      [...visibleWorks, ...visibleLab, ...visibleBooks].flatMap((entry) =>
+        filterVisibleTags(entry.data.tags ?? [])
+      )
     )
   ).sort((a, b) => a.localeCompare(b, "zh-CN"))
 
-  return { works, lab, books, allTags }
+  return { works: visibleWorks, lab: visibleLab, books: visibleBooks, allTags }
 }
 
 export function findTagBySlug(tags: string[], slug: string) {
-  return tags.find((tag) => encodeTag(tag) === slug)
+  return filterVisibleTags(tags).find((tag) => encodeTag(tag) === slug)
 }

@@ -55,6 +55,36 @@ pnpm dev
 - `pnpm preview`：本地预览构建结果
 - `pnpm check`：运行 Astro 内容和类型检查
 
+## GitHub 评论（Giscus）
+
+项目已在内容详情页接入 GitHub 评论（works/lab/books 的 `[slug]` 页面）。
+
+使用前请先在仓库开启 GitHub Discussions，并在 Giscus 后台生成参数，然后在 `apps/site/.env` 中配置：
+
+```bash
+PUBLIC_GISCUS_REPO=owner/repo
+PUBLIC_GISCUS_REPO_ID=R_kgDOxxxxxx
+PUBLIC_GISCUS_CATEGORY=General
+PUBLIC_GISCUS_CATEGORY_ID=DIC_kwDOxxxxxx
+
+# 可选项（不填会使用默认值）
+PUBLIC_GISCUS_MAPPING=pathname
+PUBLIC_GISCUS_STRICT=0
+PUBLIC_GISCUS_REACTIONS_ENABLED=1
+PUBLIC_GISCUS_EMIT_METADATA=0
+PUBLIC_GISCUS_INPUT_POSITION=top
+PUBLIC_GISCUS_LANG=zh-CN
+PUBLIC_GISCUS_LOADING=lazy
+```
+
+说明：
+
+- 只要 4 个必填项缺少任意一个，评论区会自动隐藏
+- 默认按页面 `pathname` 映射 Discussion
+- 评论区会自动跟随站点浅色 / 深色主题切换，无需单独配置主题参数
+- 可从 `apps/site/.env.example` 复制一份为 `apps/site/.env`
+- 部署到 GitHub Pages 时，需要在仓库 `Settings -> Secrets and variables -> Actions -> Variables` 中配置同名 `PUBLIC_GISCUS_*` 变量
+
 ## 配置集中管理
 
 站点常用变量集中放在 [packages/config/src/index.js](/Users/timlyu/gitcode/github/my-lab/packages/config/src/index.js)：
@@ -76,6 +106,8 @@ pnpm dev
 ## 内容目录
 
 内容都放在 [apps/site/src/content](/Users/timlyu/gitcode/github/my-lab/apps/site/src/content) 下：
+
+- 文件夹名以 `_` 开头会被视为隐藏内容，不会进入列表页、标签页或详情页生成
 
 ```text
 apps/site/src/content/

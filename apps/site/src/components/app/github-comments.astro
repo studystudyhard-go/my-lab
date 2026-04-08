@@ -1,0 +1,127 @@
+---
+const repo = import.meta.env.PUBLIC_GISCUS_REPO
+const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID
+const category = import.meta.env.PUBLIC_GISCUS_CATEGORY
+const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID
+const mapping = import.meta.env.PUBLIC_GISCUS_MAPPING ?? "pathname"
+const strict = import.meta.env.PUBLIC_GISCUS_STRICT ?? "0"
+const reactionsEnabled = import.meta.env.PUBLIC_GISCUS_REACTIONS_ENABLED ?? "1"
+const emitMetadata = import.meta.env.PUBLIC_GISCUS_EMIT_METADATA ?? "0"
+const inputPosition = import.meta.env.PUBLIC_GISCUS_INPUT_POSITION ?? "top"
+const lang = import.meta.env.PUBLIC_GISCUS_LANG ?? "zh-CN"
+const loading = import.meta.env.PUBLIC_GISCUS_LOADING ?? "lazy"
+
+const requiredConfig = {
+  PUBLIC_GISCUS_REPO: repo,
+  PUBLIC_GISCUS_REPO_ID: repoId,
+  PUBLIC_GISCUS_CATEGORY: category,
+  PUBLIC_GISCUS_CATEGORY_ID: categoryId,
+}
+
+const missingVars = Object.entries(requiredConfig)
+  .filter(([, value]) => typeof value !== "string" || value.trim().length === 0)
+  .map(([name]) => name)
+
+const enabled = missingVars.length === 0
+const showDevHint = import.meta.env.DEV && !enabled
+---
+
+{
+  enabled ? (
+    <section class="rounded-[2rem] border border-border/60 bg-card/80 px-6 py-8 shadow-sm md:px-10 md:py-10">
+      <h2 class="mb-6 font-sans text-2xl tracking-[-0.03em]">评论</h2>
+      <div class="giscus"></div>
+      <script
+        is:inline
+        define:vars={{
+          repo,
+          repoId,
+          category,
+          categoryId,
+          mapping,
+          strict,
+          reactionsEnabled,
+          emitMetadata,
+          inputPosition,
+          lang,
+          loading,
+        }}
+      >
+        (() => {
+          const GISCUS_ORIGIN = "https://giscus.app"
+          const STORAGE_KEY = "my-lab-theme"
+          const section = document.currentScript?.parentElement
+          const container = section?.querySelector(".giscus")
+
+          const resolveTheme = () => {
+            const savedTheme = window.localStorage.getItem(STORAGE_KEY) || "system"
+
+            if (savedTheme === "light" || savedTheme === "dark") {
+              return savedTheme
+            }
+
+            return document.documentElement.classList.contains("dark") ? "dark" : "light"
+          }
+
+          const syncTheme = () => {
+            const iframe = document.querySelector("iframe.giscus-frame")
+            if (!iframe?.contentWindow) return
+
+            iframe.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: resolveTheme() } } },
+              GISCUS_ORIGIN
+            )
+          }
+
+          const mount = () => {
+            if (!section || !container || section.querySelector('script[data-giscus-loader="true"]')) return
+
+            const script = document.createElement("script")
+            script.src = "https://giscus.app/client.js"
+            script.async = true
+            script.crossOrigin = "anonymous"
+            script.dataset.giscusLoader = "true"
+            script.dataset.repo = repo
+            script.dataset.repoId = repoId
+            script.dataset.category = category
+            script.dataset.categoryId = categoryId
+            script.dataset.mapping = mapping
+            script.dataset.strict = strict
+            script.dataset.reactionsEnabled = reactionsEnabled
+            script.dataset.emitMetadata = emitMetadata
+            script.dataset.inputPosition = inputPosition
+            script.dataset.theme = resolveTheme()
+            script.dataset.lang = lang
+            script.dataset.loading = loading
+
+            container.appendChild(script)
+            script.addEventListener("load", syncTheme)
+          }
+
+          mount()
+
+          const themeObserver = new MutationObserver(syncTheme)
+          themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class", "data-theme"],
+          })
+
+          if (container) {
+            const iframeObserver = new MutationObserver(syncTheme)
+            iframeObserver.observe(container, { childList: true, subtree: true })
+          }
+
+          window.addEventListener("theme-change", syncTheme)
+        })()
+      </script>
+    </section>
+  ) : showDevHint ? (
+    <section class="rounded-[2rem] border border-border/60 bg-card/80 px-6 py-8 shadow-sm md:px-10 md:py-10">
+      <h2 class="mb-3 font-sans text-2xl tracking-[-0.03em]">评论</h2>
+      <p class="text-sm leading-7 text-muted-foreground">
+        Giscus 尚未配置，缺少以下环境变量：
+        {missingVars.join(", ")}
+      </p>
+    </section>
+  ) : null
+}

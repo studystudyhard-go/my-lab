@@ -41,7 +41,7 @@ const themeInitScript = `
 <html lang={siteConfig.language}>
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href={`${siteConfig.base}/favicon.svg`} />
+    <link rel="icon" type="image/png" href={`${siteConfig.base}/avatar.png`} />
     <link rel="icon" href={`${siteConfig.base}/favicon.ico`} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
@@ -50,12 +50,12 @@ const themeInitScript = `
     <link rel="canonical" href={canonical} />
     <script is:inline set:html={themeInitScript} />
   </head>
-  <body>
+  <body class="relative isolate">
     <SiteHeader currentPath={currentPath} overlay={overlayHeader} client:load />
-    <main class="min-h-screen">
+    <main class="relative z-0 min-h-screen">
       <slot />
     </main>
-    <footer class="mx-auto mt-16 flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pb-10 text-sm text-muted-foreground md:px-6">
+    <footer class="relative z-0 mx-auto mt-16 flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pb-10 text-sm text-muted-foreground md:px-6">
       <span>{siteConfig.footerName}</span>
       <span>Built with Astro, React, shadcn/ui, and Markdown.</span>
     </footer>

@@ -3,7 +3,6 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-import { withBase } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { Badge } from "@my/ui/badge"
 import { Button } from "@my/ui/button"
@@ -97,9 +96,6 @@ export function HomeBanner({ items }: { items: BannerItem[] }) {
                     <p className="max-w-2xl text-lg leading-8 text-white/85 md:text-2xl md:leading-10">
                       {item.note}
                     </p>
-                    <Button asChild size="lg" className="rounded-full px-7">
-                      <a href={withBase(`/works/${item.entryId}`)}>View Project</a>
-                    </Button>
                   </div>
                 </div>
               </div>

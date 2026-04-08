@@ -4,10 +4,9 @@ import { sectionConfig } from "@my/config"
 import { EntryCard } from "@/components/app/entry-card"
 import { ModuleHeader } from "@/components/app/module-header"
 import BaseLayout from "@/layouts/BaseLayout.astro"
+import { filterVisibleCollectionEntries, sortEntriesByPublishedAt } from "@/lib/works"
 
-const notes = (await getCollection("lab")).sort(
-  (a, b) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0)
-)
+const notes = sortEntriesByPublishedAt(filterVisibleCollectionEntries(await getCollection("lab")))
 ---
 
 <BaseLayout title={sectionConfig.lab.label} description={sectionConfig.lab.description} currentPath="/lab">

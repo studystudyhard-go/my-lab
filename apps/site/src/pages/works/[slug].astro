@@ -1,18 +1,18 @@
 ---
 import { getCollection, render } from "astro:content"
 import { DetailShell } from "@/components/app/detail-shell"
+import GitHubComments from "@/components/app/github-comments.astro"
 import { WorkMasonry } from "@/components/app/work-masonry"
 import BaseLayout from "@/layouts/BaseLayout.astro"
-import { getAllWorkMedia, getDisplayDate } from "@/lib/works"
+import { filterVisibleCollectionEntries, getAllWorkMedia, sortEntriesByPublishedAt } from "@/lib/works"
 
 export async function getStaticPaths() {
-  const works = await getCollection("works")
+  const works = sortEntriesByPublishedAt(filterVisibleCollectionEntries(await getCollection("works")))
   return works.map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
 }
 
 const { entry } = Astro.props
 const { Content } = await render(entry)
-const displayDate = getDisplayDate(entry)
 const galleryMedia = getAllWorkMedia(entry)
 ---
 
@@ -25,10 +25,11 @@ const galleryMedia = getAllWorkMedia(entry)
       backHref="/"
       backLabel="返回作品展"
     >
-      <WorkMasonry media={galleryMedia} displayDate={displayDate} />
+      <WorkMasonry media={galleryMedia} client:load />
       <div class="space-y-6 text-lg leading-9 text-muted-foreground [&_p]:leading-9">
         <Content />
       </div>
     </DetailShell>
+    <GitHubComments />
   </div>
 </BaseLayout>
